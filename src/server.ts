@@ -10,6 +10,7 @@ import route from './infrastructure/routes/routes';
 import DB from './infrastructure/settings/db/DB';
 import { swaggerServe, swaggerSetup } from './infrastructure/settings/doc/swagger';
 import { socketIo } from './infrastructure/settings/io/io';
+import { ioConnectionManager } from './infrastructure/socket';
 
 
 
@@ -26,14 +27,14 @@ class Server {
      * description: start the server
      */
     public start(port: String = this.port) {
-        this.middleware();
-        this.routes()
-        DB.connect();
         this.serve = http.createServer(Server.app);
         this.socketIo = socketIo(this.serve);
         this.serve.listen(this.port, () => {
             console.log('Server on port ' + port)
         })
+        this.middleware();
+        this.routes()
+        DB.connect();
 
         
     }
@@ -41,13 +42,14 @@ class Server {
     private middleware() {
         Server.app.use(express.urlencoded({ extended: false }))
         Server.app.use(express.json())
-        Server.app.use(cors())
+        Server.app.use(cors());
         Server.app.use('/doc', swaggerServe, swaggerSetup);
         Server.app.use('/', express.static(path.join(__dirname, '../public')));
     }
 
     private routes() {
-        Server.app.use('/api', route)
+        Server.app.use('/api', route);
+        ioConnectionManager(this.socketIo);
     }
 
 }

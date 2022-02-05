@@ -24,6 +24,7 @@ import { verifyToken } from "../utils/token";
 export const verfyUserToken = (req: Request, res: Response, next: NextFunction)=>{
     const token = req.headers['x-token']?.toString() || 'a';
     try{
+        
         const {_id}:any = verifyToken(token);
     
         req.params._id = _id;

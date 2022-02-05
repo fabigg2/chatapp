@@ -18,6 +18,13 @@ export const userRepository = {
         user.hash = uuid('shop.com', uuid.URL);
         return await user.save();
     },
+    edit: async (uid: string, userDto: any): Promise<IUser> => {
+        const {isConnected } = userDto;
+        const user = await User.findById(uid);
+        if(isConnected) {user.isConnected = isConnected;}
+
+        return await user.save();
+    },
     findOneById: async (uid: string): Promise<IUser> => {
         return await User.findById(uid);
     },
@@ -27,7 +34,10 @@ export const userRepository = {
     findOneByhash: async (hash: string): Promise<IUser> => {
         return await User.findOne({hash});
     },
-    findMany: async (): Promise<IUser[]> => {
-        return await User.find();
+    findMany: async (params:any = {}): Promise<IUser[]> => {
+        return await User.find(params);
+    },
+    findConnected: async (fileds: string = '_id, name, lastname, isConnected'): Promise<IUser[]> => {
+        return await User.find().select(fileds).exec();
     }
 }

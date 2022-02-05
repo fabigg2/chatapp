@@ -60,6 +60,40 @@ exports.authRoutes.post('/sign-in', [
 ], auth_1.auth.signInRegular);
 /**
  * @openapi
+ * /auth/token:
+ *   post:
+ *     summary: Log in with email and password
+ *     tags:
+ *      - auth
+ *     parameters:
+ *         - in: header
+ *           name: x-token
+ *           required: true
+ *
+ *     responses:
+ *       200:
+ *         description: .
+ *         content:
+ *          application/json:
+ *            schema:
+ *                 type: object
+ *                 properties:
+ *                     ok:
+ *                         type: boolean
+ *                     msg:
+ *                         type: string
+ *                     data:
+ *                         type: object
+ *       500:
+ *         description: server error
+ */
+exports.authRoutes.post('/token', [
+    (0, express_validator_1.check)('x-token', 'token required').notEmpty().isString(),
+    globals_1.expressValidatorErrors,
+    globals_1.verfyUserToken
+], auth_1.auth.logInWithToken);
+/**
+ * @openapi
  * /verify/{hash}:
  *   get:
  *     summary: verify account

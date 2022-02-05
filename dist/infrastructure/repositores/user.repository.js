@@ -28,6 +28,14 @@ exports.userRepository = {
         user.hash = (0, uuid_1.v5)('shop.com', uuid_1.v5.URL);
         return yield user.save();
     }),
+    edit: (uid, userDto) => __awaiter(void 0, void 0, void 0, function* () {
+        const { isConnected } = userDto;
+        const user = yield user_model_1.default.findById(uid);
+        if (isConnected) {
+            user.isConnected = isConnected;
+        }
+        return yield user.save();
+    }),
     findOneById: (uid) => __awaiter(void 0, void 0, void 0, function* () {
         return yield user_model_1.default.findById(uid);
     }),
@@ -37,7 +45,10 @@ exports.userRepository = {
     findOneByhash: (hash) => __awaiter(void 0, void 0, void 0, function* () {
         return yield user_model_1.default.findOne({ hash });
     }),
-    findMany: () => __awaiter(void 0, void 0, void 0, function* () {
-        return yield user_model_1.default.find();
+    findMany: (params = {}) => __awaiter(void 0, void 0, void 0, function* () {
+        return yield user_model_1.default.find(params);
+    }),
+    findConnected: (fileds = '_id, name, lastname, isConnected') => __awaiter(void 0, void 0, void 0, function* () {
+        return yield user_model_1.default.find().select(fileds).exec();
     })
 };

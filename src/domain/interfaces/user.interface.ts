@@ -12,5 +12,6 @@ export interface IUser extends Document {
     picture: string
     rol: string
     hash: string
+    isConnected: boolean
 
 }

@@ -2,7 +2,7 @@ import { Router } from "express";
 import { body, check } from "express-validator";
 import { auth } from "../auth/auth";
 // import { userController } from "../controllers/user.controller";
-import { catchErrors, expressValidatorErrors } from "../middlewares/globals";
+import { catchErrors, expressValidatorErrors, verfyUserToken } from "../middlewares/globals";
 import { userExistByEmail } from "../middlewares/user.middlewares";
 // import { body, check } from "express-validator";
 // import { productController } from "../controllers/product.controller";
@@ -61,6 +61,43 @@ authRoutes.post('/sign-in',
         expressValidatorErrors
     ],
     auth.signInRegular
+);
+/**
+ * @openapi
+ * /auth/token:
+ *   post:
+ *     summary: Log in with email and password
+ *     tags: 
+ *      - auth
+ *     parameters:
+ *         - in: header
+ *           name: x-token
+ *           required: true
+ *      
+ *     responses:
+ *       200:
+ *         description: .
+ *         content:
+ *          application/json:
+ *            schema:
+ *                 type: object
+ *                 properties:
+ *                     ok:
+ *                         type: boolean
+ *                     msg:
+ *                         type: string
+ *                     data:
+ *                         type: object              
+ *       500:
+ *         description: server error 
+ */
+ authRoutes.post('/token',
+ [
+     check('x-token', 'token required').notEmpty().isString(),
+     expressValidatorErrors,
+     verfyUserToken
+ ],
+ auth.logInWithToken
 );
 
 /**

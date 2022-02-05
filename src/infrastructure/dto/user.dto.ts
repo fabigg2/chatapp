@@ -12,5 +12,6 @@ export class UserDTO {
     readonly picture!: string
     readonly rol!: string
     readonly hash!: string
+    readonly isConnected !: boolean;
 
 }

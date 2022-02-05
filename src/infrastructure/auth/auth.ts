@@ -4,7 +4,7 @@ import { userRepository } from "../repositores/user.repository";
 import { compoarePassword } from "../utils/encript.password";
 import { succesfulResponse, unSuccesfulResponse } from "../utils/response";
 import { genToken } from "../utils/token";
-import {UserDTO} from '../dto/user.dto';
+import { UserDTO } from '../dto/user.dto';
 import { IUser } from "../../domain/interfaces/user.interface";
 
 export const auth = {
@@ -23,7 +23,7 @@ export const auth = {
             unSuccesfulResponse(res);
         }
 
- 
+
     },
     signInRegular: async (req: Request, res: Response) => {
         const { email, password } = req.body;
@@ -59,7 +59,7 @@ export const auth = {
             req.body.lastname = family_name;
             req.body.name = given_name;
             req.body.password = '12345678Google',
-            req.body.isGoogle = true;
+                req.body.isGoogle = true;
             // req.body.picture = picture;
         } catch (error) {
             unSuccesfulResponse(res);
@@ -68,23 +68,43 @@ export const auth = {
         next();
 
     },
-    saveAndAuth : async(req: Request, res: Response)=>{
-        const {name, lastname, email, password, isGoogle, picture} = req.body;
-        const currentUser:IUser = req.body.currentUser;
-        let nUser :UserDTO =  {name, lastname, email, password, isGoogle, picture,state:true,isValidated:true, lastSignIn:undefined, rol:'regular',hash:''} ;
+
+    /**
+     * @description create a new user, data comes from the middlaware that evaluetes google auth
+     * @param req 
+     * @param res 
+     * @returns 
+     */
+    saveAndAuth: async (req: Request, res: Response) => {
+        const { name, lastname, email, password, isGoogle, picture } = req.body;
+        const currentUser: IUser = req.body.currentUser;
+        let nUser: UserDTO = { name, lastname, email, password, isGoogle, picture, state: true, isValidated: true, lastSignIn: undefined, rol: 'regular', hash: '', isConnected: false };
         try {
-            if(!currentUser){
+            if (!currentUser) {
                 await userRepository.save(nUser);
-            }else if(!currentUser.isGoogle){
-                return unSuccesfulResponse(res, {error:'Sign in with user and password'})
-            }else{
-            const token = genToken({_id:currentUser._id});    
-            succesfulResponse(res, {user:currentUser, token});
+            } else if (!currentUser.isGoogle) {
+                return unSuccesfulResponse(res, { error: 'Sign in with user and password' })
+            } else {
+                const token = genToken({ _id: currentUser._id });
+                succesfulResponse(res, { user: currentUser, token });
             }
         } catch (error) {
             console.log(error);
             unSuccesfulResponse(res);
         }
-        
+
+    },
+
+    logInWithToken: async (req: Request, res:Response) => {
+        const {_id} = req.params;
+        try {
+            const user = await userRepository.findOneById(_id);
+            const token = genToken({_id:user._id});
+            succesfulResponse(res, {user, token});    
+        } catch (error) {
+            console.log(error);
+            unSuccesfulResponse(res);
+        }
+
     }
 }

@@ -91,6 +91,10 @@ const userSchema = new mongoose_1.Schema({
         type: String,
         enun: ['admin', 'regular'],
         default: 'regular'
+    },
+    isConnected: {
+        type: Boolean,
+        default: false
     }
 }, { timestamps: true });
 userSchema.pre('save', function (next) {

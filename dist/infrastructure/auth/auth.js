@@ -71,10 +71,16 @@ exports.auth = {
         }
         next();
     }),
+    /**
+     * @description create a new user, data comes from the middlaware that evaluetes google auth
+     * @param req
+     * @param res
+     * @returns
+     */
     saveAndAuth: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { name, lastname, email, password, isGoogle, picture } = req.body;
         const currentUser = req.body.currentUser;
-        let nUser = { name, lastname, email, password, isGoogle, picture, state: true, isValidated: true, lastSignIn: undefined, rol: 'regular', hash: '' };
+        let nUser = { name, lastname, email, password, isGoogle, picture, state: true, isValidated: true, lastSignIn: undefined, rol: 'regular', hash: '', isConnected: false };
         try {
             if (!currentUser) {
                 yield user_repository_1.userRepository.save(nUser);
@@ -86,6 +92,18 @@ exports.auth = {
                 const token = (0, token_1.genToken)({ _id: currentUser._id });
                 (0, response_1.succesfulResponse)(res, { user: currentUser, token });
             }
+        }
+        catch (error) {
+            console.log(error);
+            (0, response_1.unSuccesfulResponse)(res);
+        }
+    }),
+    logInWithToken: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const { _id } = req.params;
+        try {
+            const user = yield user_repository_1.userRepository.findOneById(_id);
+            const token = (0, token_1.genToken)({ _id: user._id });
+            (0, response_1.succesfulResponse)(res, { user, token });
         }
         catch (error) {
             console.log(error);
