@@ -1,8 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
-// import { saveCar } from '../controllers/carController';
-// import { encodePassword } from '../helpers/utils';
 /**
  * @swagger
  * components:
@@ -16,10 +14,15 @@ const mongoose_1 = require("mongoose");
  *                  type: string
  *              msg:
  *                  type: string
+ *              state:
+ *                  type: number
+  *              date:
+ *                  type: date
  *          required:
  *              -from
  *              -to
  *              -msg
+ *              -state
  */
 const messageSchema = new mongoose_1.Schema({
     from: {
@@ -33,6 +36,15 @@ const messageSchema = new mongoose_1.Schema({
     msg: {
         type: String,
         required: true,
+    },
+    state: {
+        type: Number,
+        required: true,
+        default: 0
+    },
+    date: {
+        type: Date,
+        required: false
     }
-}, { timestamps: true });
+});
 exports.default = (0, mongoose_1.model)('message', messageSchema);

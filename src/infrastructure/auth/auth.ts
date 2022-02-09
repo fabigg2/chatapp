@@ -27,15 +27,19 @@ export const auth = {
     },
     signInRegular: async (req: Request, res: Response) => {
         const { email, password } = req.body;
-        const userFound = await userRepository.findOneByEmail(email);
+        try {
+            const userFound = await userRepository.findOneByEmail(email);
+            if (!userFound)
+                return unSuccesfulResponse(res, { error: 'user or password incorrect' }, 400)
+            if (!compoarePassword(password, userFound.password))
+                return unSuccesfulResponse(res, { error: 'user or password incorrect' }, 400)
+            const token = genToken({ _id: userFound._id })
+            userFound.password = '';
+            succesfulResponse(res, { token, user: userFound });
+        } catch (error) {
 
-        if (!userFound)
-            return unSuccesfulResponse(res, { error: 'user or password incorrect' })
-        if (!compoarePassword(password, userFound.password))
-            return unSuccesfulResponse(res, { error: 'user or password incorrect' })
-        const token = genToken({ _id: userFound._id })
-        userFound.password = '';
-        succesfulResponse(res, { token, user: userFound });
+        }
+
     },
     googleAuth: async (req: Request, res: Response, next: NextFunction) => {
         const client = new OAuth2Client(process.env.CLIENT_ID);
@@ -95,12 +99,12 @@ export const auth = {
 
     },
 
-    logInWithToken: async (req: Request, res:Response) => {
-        const {_id} = req.params;
+    logInWithToken: async (req: Request, res: Response) => {
+        const { _id } = req.params;
         try {
             const user = await userRepository.findOneById(_id);
-            const token = genToken({_id:user._id});
-            succesfulResponse(res, {user, token});    
+            const token = genToken({ _id: user._id });
+            succesfulResponse(res, { user, token });
         } catch (error) {
             console.log(error);
             unSuccesfulResponse(res);

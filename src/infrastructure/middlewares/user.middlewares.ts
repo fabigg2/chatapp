@@ -14,8 +14,9 @@ export const userExistByEmail = async (req: Request, res: Response, next: NextFu
             req.body.currentUser = user;
         }
     } catch (error) {
-        unSuccesfulResponse(res);
         console.log(error);
+        unSuccesfulResponse(res, {msg: 'error'});
+        
     }
     next();
 }

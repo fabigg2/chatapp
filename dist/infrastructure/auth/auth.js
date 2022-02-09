@@ -32,14 +32,18 @@ exports.auth = {
     }),
     signInRegular: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { email, password } = req.body;
-        const userFound = yield user_repository_1.userRepository.findOneByEmail(email);
-        if (!userFound)
-            return (0, response_1.unSuccesfulResponse)(res, { error: 'user or password incorrect' });
-        if (!(0, encript_password_1.compoarePassword)(password, userFound.password))
-            return (0, response_1.unSuccesfulResponse)(res, { error: 'user or password incorrect' });
-        const token = (0, token_1.genToken)({ _id: userFound._id });
-        userFound.password = '';
-        (0, response_1.succesfulResponse)(res, { token, user: userFound });
+        try {
+            const userFound = yield user_repository_1.userRepository.findOneByEmail(email);
+            if (!userFound)
+                return (0, response_1.unSuccesfulResponse)(res, { error: 'user or password incorrect' }, 400);
+            if (!(0, encript_password_1.compoarePassword)(password, userFound.password))
+                return (0, response_1.unSuccesfulResponse)(res, { error: 'user or password incorrect' }, 400);
+            const token = (0, token_1.genToken)({ _id: userFound._id });
+            userFound.password = '';
+            (0, response_1.succesfulResponse)(res, { token, user: userFound });
+        }
+        catch (error) {
+        }
     }),
     googleAuth: (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
         const client = new google_auth_library_1.OAuth2Client(process.env.CLIENT_ID);

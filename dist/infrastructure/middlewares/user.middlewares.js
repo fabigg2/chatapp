@@ -24,8 +24,8 @@ const userExistByEmail = (req, res, next) => __awaiter(void 0, void 0, void 0, f
         }
     }
     catch (error) {
-        (0, response_1.unSuccesfulResponse)(res);
         console.log(error);
+        (0, response_1.unSuccesfulResponse)(res, { msg: 'error' });
     }
     next();
 });

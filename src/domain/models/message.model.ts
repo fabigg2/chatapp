@@ -1,7 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { encodePassword } from '../../infrastructure/utils/encript.password';
-// import { saveCar } from '../controllers/carController';
-// import { encodePassword } from '../helpers/utils';
+
 
 /**
  * @swagger
@@ -16,10 +14,15 @@ import { encodePassword } from '../../infrastructure/utils/encript.password';
  *                  type: string
  *              msg:
  *                  type: string
+ *              state: 
+ *                  type: number
+  *              date: 
+ *                  type: date
  *          required:
  *              -from
  *              -to
  *              -msg
+ *              -state
  */
 
 const messageSchema = new Schema({
@@ -34,8 +37,17 @@ const messageSchema = new Schema({
     msg: {
         type: String,
         required: true,
+    },
+    state: {
+        type: Number,
+        required: true,
+        default: 0
+    },
+    date: {
+        type: Date,
+        required: false
     }
-}, { timestamps: true })
+})
 
 
 export default model('message', messageSchema);

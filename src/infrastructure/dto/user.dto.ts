@@ -1,4 +1,3 @@
-import { Date } from "mongoose"
 
 export class UserDTO {
     readonly name!: string
