@@ -16,12 +16,10 @@ export const messageController = async (socket: Socket) => {
         data.state = 1;
         try {
             const res = await messageRepository.create(data);
-            console.log(res);
             socket.to(`${data.to}`).emit('new-message', res);
-            socket.emit('message-receive', res);
-            socket.emit('new-message', res);
+            // socket.emit('message-receive', res);
+            socket.emit('new-message-me', res);
         } catch (error) {
-            console.log(error);
             exception(socket, 'internal server error')
 
         }
@@ -37,13 +35,24 @@ export const messageController = async (socket: Socket) => {
 
         }
     });
+    // socket.on('unsight-message', async(data) => {
+    //     data.state = 2;
+    //     try {
+    //         const res = await messageRepository.edit(data._id, data.state)
+    //         socket.to(`${data.from}`).emit('message-receive', res);
+    //     } catch (error) {
+
+    //     }
+    // });
+
+    
     socket.on('find-all-messages', async (data) => {
         try {
+            await messageRepository.editMany(data);
             const messages = await messageRepository.find(data);
-            console.log(messages);
             socket.emit('find-all-messages', messages);
+            socket.to(data.to).emit('find-all-messages', messages);
         } catch (error) {
-            console.log(error);
             exception(socket, 'internal server error')
 
         }
@@ -77,7 +86,6 @@ const joinSalaPesonal = async (socket: Socket, uid: string) => {
             return exception(socket, 'id in token ivalid')
         }
         socket.join(`${user._id}`);
-        console.log(socket.rooms);
         user.isConnected = true;
         await user.save();
     } catch (error) {

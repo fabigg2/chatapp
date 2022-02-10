@@ -30,5 +30,14 @@ exports.messageRepository = {
     edit: (id, state) => __awaiter(void 0, void 0, void 0, function* () {
         const messages = yield message_model_1.default.findByIdAndUpdate(id, { state }, { new: true });
         return messages;
+    }),
+    editMany: ({ from, to }) => __awaiter(void 0, void 0, void 0, function* () {
+        const messages = yield message_model_1.default.updateMany({}, { state: 3 }, { new: true })
+            .and([
+            { to: from },
+            { from: to },
+            { $or: [{ state: 1 }, { state: 2 }] }
+        ]).exec();
+        return messages;
     })
 };
