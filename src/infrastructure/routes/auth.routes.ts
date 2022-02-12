@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { body, check, header } from "express-validator";
+import { body, check } from "express-validator";
 import { auth } from "../auth/auth";
 // import { userController } from "../controllers/user.controller";
 import { catchErrors, expressValidatorErrors, verfyUserToken } from "../middlewares/globals";
@@ -167,7 +167,7 @@ authRoutes.get('/verify/:hash',
  */
 authRoutes.post('/google',
     [
-        header('xgtoken', 'google token required').notEmpty().isString().isLength({min:30}),
+        check('xgtoken', 'google token required').notEmpty().isString().isLength({min:30}),
         expressValidatorErrors,
         auth.googleAuth,
         userExistByEmail,

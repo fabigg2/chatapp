@@ -70,8 +70,8 @@ exports.auth = {
             // req.body.picture = picture;
         }
         catch (error) {
-            (0, response_1.unSuccesfulResponse)(res);
             console.log(error);
+            (0, response_1.unSuccesfulResponse)(res);
         }
         next();
     }),

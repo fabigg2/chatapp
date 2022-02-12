@@ -65,8 +65,8 @@ export const auth = {
             req.body.isValidated = true;
             // req.body.picture = picture;
         } catch (error) {
-            unSuccesfulResponse(res);
             console.log(error);
+            unSuccesfulResponse(res);
         }
         next();
 
