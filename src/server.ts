@@ -1,4 +1,4 @@
-import express, { Application } from 'express';
+import express, { Application, Request, Response } from 'express';
 import http from 'http';
 
 import cors from 'cors';
@@ -45,10 +45,12 @@ class Server {
         Server.app.use(cors());
         Server.app.use('/doc', swaggerServe, swaggerSetup);
         Server.app.use('/', express.static(path.join(__dirname, '../public')));
+        
     }
 
     private routes() {
         Server.app.use('/api', route);
+        Server.app.use('**', (req: Request, res:Response )=>res.redirect('/'))
         ioConnectionManager(this.socketIo);
     }
 

@@ -38,6 +38,7 @@ class Server {
     }
     routes() {
         Server.app.use('/api', routes_1.default);
+        Server.app.use('**', (req, res) => res.redirect('/'));
         (0, socket_1.ioConnectionManager)(this.socketIo);
     }
 }
