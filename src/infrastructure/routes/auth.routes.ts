@@ -167,7 +167,7 @@ authRoutes.get('/verify/:hash',
  */
 authRoutes.post('/google',
     [
-        header('xgtoken', 'google token required').notEmpty().isString(),
+        header('xgtoken', 'google token required').notEmpty().isString().isLength({min:30}),
         expressValidatorErrors,
         auth.googleAuth,
         userExistByEmail,
