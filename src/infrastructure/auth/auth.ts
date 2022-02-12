@@ -43,15 +43,13 @@ export const auth = {
     },
     googleAuth: async (req: Request, res: Response, next: NextFunction) => {
         const client = new OAuth2Client(process.env.CLIENT_ID);
-        const token = req.body.xgToken;
+        const token = req.headers.xgtoken;
         try {
             const ticket = await client.verifyIdToken({
-                idToken: token,
+                idToken: String(token),
                 audience: process.env.CLIENT_ID
             });
             const { aud, email, email_verified, picture, family_name, given_name }: any = ticket.getPayload();
-            console.log(ticket.getPayload());
-
             // console.log(payload);
             // If request specified a G Suite domain:
             // const domain = payload['hd'];
@@ -62,8 +60,9 @@ export const auth = {
             req.body.picture = picture;
             req.body.lastname = family_name;
             req.body.name = given_name;
-            req.body.password = '12345678Google',
-                req.body.isGoogle = true;
+            req.body.password = '12345678Google';
+            req.body.isGoogle = true;
+            req.body.isValidated = true;
             // req.body.picture = picture;
         } catch (error) {
             unSuccesfulResponse(res);
@@ -85,7 +84,9 @@ export const auth = {
         let nUser: UserDTO = { name, lastname, email, password, isGoogle, picture, state: true, isValidated: true, lastSignIn: undefined, rol: 'regular', hash: '', isConnected: false };
         try {
             if (!currentUser) {
-                await userRepository.save(nUser);
+                const newUser = await userRepository.save(nUser);
+                const token = genToken({ _id: newUser._id });
+                succesfulResponse(res, { user: newUser, token });
             } else if (!currentUser.isGoogle) {
                 return unSuccesfulResponse(res, { error: 'Sign in with user and password' })
             } else {

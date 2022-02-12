@@ -17,13 +17,14 @@ const uuid_1 = require("uuid");
 const user_model_1 = __importDefault(require("../../domain/models/user.model"));
 exports.userRepository = {
     save: (userDto) => __awaiter(void 0, void 0, void 0, function* () {
-        const { name, lastname, email, password, isGoogle } = userDto;
+        const { name, lastname, email, password, isGoogle, isValidated } = userDto;
         let user = new user_model_1.default({
             name,
             lastname,
             email,
             password,
-            isGoogle: isGoogle || false
+            isGoogle: isGoogle || false,
+            isValidated: isValidated || false
         });
         user.hash = (0, uuid_1.v5)('shop.com', uuid_1.v5.URL);
         return yield user.save();

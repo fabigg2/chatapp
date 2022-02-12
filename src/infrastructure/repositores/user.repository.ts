@@ -7,13 +7,15 @@ import { UserDTO } from '../dto/user.dto';
 
 export const userRepository = {
     save: async (userDto: UserDTO): Promise<IUser> => {
-        const { name, lastname, email, password, isGoogle } = userDto;
+        const { name, lastname, email, password, isGoogle, isValidated } = userDto;
         let user: IUser = new User({
             name,
             lastname,
             email,
             password,
-            isGoogle: isGoogle || false
+            isGoogle: isGoogle || false,
+            isValidated: isValidated || false
+
         });
         user.hash = uuid('shop.com', uuid.URL);
         return await user.save();

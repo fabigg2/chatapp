@@ -11,7 +11,7 @@ const msg = {
   html: `<div>
             <h3>Account verification</h3>
             <p>Click in the button below to verify your account</p>
-            <a href="http://localhost:5000/auth/verify/${hash}">Verify account</a>
+            <a href="${process.env.HOST}/auth/verify/${hash}">Verify account</a>
         </div>`,
 }
 return await sgMail.send(msg)

@@ -133,7 +133,7 @@ exports.authRoutes.get('/verify/:hash', [
  *      - auth
  *     parameters:
  *         - in: header
- *           name: xgToken
+ *           name: xgtoken
  *           required: true
  *     responses:
  *       200:
@@ -153,7 +153,7 @@ exports.authRoutes.get('/verify/:hash', [
  *         description: server error
  */
 exports.authRoutes.post('/google', [
-    (0, express_validator_1.body)('xgToken', 'google token required').notEmpty().isString(),
+    (0, express_validator_1.header)('xgtoken', 'google token required').notEmpty().isString(),
     globals_1.expressValidatorErrors,
     auth_1.auth.googleAuth,
     user_middlewares_1.userExistByEmail,
