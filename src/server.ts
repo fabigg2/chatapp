@@ -50,7 +50,7 @@ class Server {
 
     private routes() {
         Server.app.use('/api', route);
-        // Server.app.use('**', (req: Request, res:Response )=>res.redirect('/'))
+        Server.app.use('**', (req: Request, res:Response )=>res.redirect('/'))
         ioConnectionManager(this.socketIo);
     }
 
