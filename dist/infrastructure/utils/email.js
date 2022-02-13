@@ -24,7 +24,7 @@ const emailValidationAccount = (hash, email) => __awaiter(void 0, void 0, void 0
         html: `<div>
             <h3>Account verification</h3>
             <p>Click in the button below to verify your account</p>
-            <a href="${process.env.HOST}/auth/verify/${hash}">Verify account</a>
+            <a href="${process.env.HOST}/api/auth/verify/${hash}">Verify account</a>
         </div>`,
     };
     return yield mail_1.default.send(msg);
