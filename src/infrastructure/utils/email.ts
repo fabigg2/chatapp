@@ -1,4 +1,4 @@
-import sgMail from '@sendgrid/mail'
+import sgMail from '@sendgrid/mail';
 
 export const emailValidationAccount =async (hash: string, email: string) => {
     

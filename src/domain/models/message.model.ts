@@ -46,6 +46,10 @@ const messageSchema = new Schema({
     date: {
         type: Date,
         required: false
+    },
+    deletedTo: {
+        type: Array,
+        default: []
     }
 })
 

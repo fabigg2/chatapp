@@ -39,20 +39,24 @@ const messageController = (socket) => __awaiter(void 0, void 0, void 0, function
         catch (error) {
         }
     }));
-    // socket.on('unsight-message', async(data) => {
-    //     data.state = 2;
-    //     try {
-    //         const res = await messageRepository.edit(data._id, data.state)
-    //         socket.to(`${data.from}`).emit('message-receive', res);
-    //     } catch (error) {
-    //     }
-    // });
     socket.on('find-all-messages', (data) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             yield message_repositoy_1.messageRepository.editMany(data);
             const messages = yield message_repositoy_1.messageRepository.find(data);
             socket.emit('find-all-messages', messages);
             socket.to(data.to).emit('find-all-messages', messages);
+        }
+        catch (error) {
+            exception(socket, 'internal server error');
+        }
+    }));
+    socket.on('delete-message', (data) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const res = yield message_repositoy_1.messageRepository.delete(data);
+            if (res) {
+                socket.emit('deleted-message', res);
+                socket.to(res.to).emit('deleted-message', res);
+            }
         }
         catch (error) {
             exception(socket, 'internal server error');
@@ -109,7 +113,6 @@ const leaveSalaPesonal = (socket, uid) => __awaiter(void 0, void 0, void 0, func
 const usersConneted = (socket, use) => __awaiter(void 0, void 0, void 0, function* () {
     const token = socket.handshake.headers['x-token'] || '';
     const { _id } = (0, token_1.verifyToken)(String(token));
-    // console.log('\n\n\n' + token);
     try {
         const users = yield user_repository_1.userRepository.findMany({ _id: { '$ne': _id } });
         const user = yield user_repository_1.userRepository.findOneById(_id);

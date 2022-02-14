@@ -20,6 +20,22 @@ export const userExistByEmail = async (req: Request, res: Response, next: NextFu
     }
     next();
 }
+export const userExistByEmailForGoogle = async (req: Request, res: Response, next: NextFunction) => {
+    const { email } = req.body;
+    try {
+        let user = await userRepository.findOneByEmail(email);
+        if (user && user._id) {
+            // console.log(user);
+            !user.isGoogle && errorRes(req, `${email} already exist`)
+            req.body.currentUser = user;
+        }
+    } catch (error) {
+        console.log(error);
+        unSuccesfulResponse(res, {msg: 'error'});
+        
+    }
+    next();
+}
 
 export const userExist = async(req: Request, res: Response, next: NextFunction)=>{
     const {_id} = req.params;

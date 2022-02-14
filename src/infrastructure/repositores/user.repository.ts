@@ -1,4 +1,4 @@
-import {v5 as uuid} from 'uuid';
+import {v4 as uuid} from 'uuid';
 
 import { IUser } from '../../domain/interfaces/user.interface';
 import User from '../../domain/models/user.model';
@@ -14,10 +14,10 @@ export const userRepository = {
             email,
             password,
             isGoogle: isGoogle || false,
-            isValidated: isValidated || false
+            isValidated: isValidated || false,
+            hash: uuid()
 
         });
-        user.hash = uuid('shop.com', uuid.URL);
         return await user.save();
     },
     edit: async (uid: string, userDto: any): Promise<IUser> => {

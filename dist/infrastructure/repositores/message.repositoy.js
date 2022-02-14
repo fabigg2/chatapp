@@ -20,7 +20,6 @@ exports.messageRepository = {
         return yield message.save();
     }),
     find: ({ from, to }) => __awaiter(void 0, void 0, void 0, function* () {
-        console.log(from, to);
         const messages = yield message_model_1.default.find().and([
             { $or: [{ to }, { to: from }] },
             { $or: [{ from }, { from: to }] }
@@ -39,5 +38,17 @@ exports.messageRepository = {
             { $or: [{ state: 1 }, { state: 2 }] }
         ]).exec();
         return messages;
+    }),
+    delete: ({ id, who }) => __awaiter(void 0, void 0, void 0, function* () {
+        const message = yield message_model_1.default.findById(id);
+        if (message) {
+            if (who[0] && !message.deletedTo.includes(who[0])) {
+                message.deletedTo.push(who[0]);
+            }
+            if (who[1] && !message.deletedTo.includes(who[1])) {
+                message.deletedTo.push(who[1]);
+            }
+            return yield message.save();
+        }
     })
 };

@@ -45,6 +45,10 @@ const messageSchema = new mongoose_1.Schema({
     date: {
         type: Date,
         required: false
+    },
+    deletedTo: {
+        type: Array,
+        default: []
     }
 });
 exports.default = (0, mongoose_1.model)('message', messageSchema);

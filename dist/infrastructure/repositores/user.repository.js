@@ -24,9 +24,9 @@ exports.userRepository = {
             email,
             password,
             isGoogle: isGoogle || false,
-            isValidated: isValidated || false
+            isValidated: isValidated || false,
+            hash: (0, uuid_1.v4)()
         });
-        user.hash = (0, uuid_1.v5)('shop.com', uuid_1.v5.URL);
         return yield user.save();
     }),
     edit: (uid, userDto) => __awaiter(void 0, void 0, void 0, function* () {

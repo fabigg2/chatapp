@@ -15,6 +15,7 @@ const user_repository_1 = require("../repositores/user.repository");
 const encript_password_1 = require("../utils/encript.password");
 const response_1 = require("../utils/response");
 const token_1 = require("../utils/token");
+const email_1 = require("../utils/email");
 exports.auth = {
     vefifyAccountRegistration: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { hash } = req.params;
@@ -24,7 +25,7 @@ exports.auth = {
                 return (0, response_1.unSuccesfulResponse)(res, { error: 'invalid hash' });
             userFound.isValidated = true;
             yield userFound.save();
-            (0, response_1.succesfulResponse)(res, userFound);
+            (0, response_1.succesfulResponse)(res, { user: userFound }, 200, 'Account velidation successful');
         }
         catch (error) {
             (0, response_1.unSuccesfulResponse)(res);
@@ -113,6 +114,20 @@ exports.auth = {
         }
         catch (error) {
             console.log(error);
+            (0, response_1.unSuccesfulResponse)(res);
+        }
+    }),
+    sendValidationLink: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const { email } = req.body;
+        try {
+            const userFound = yield user_repository_1.userRepository.findOneByEmail(email);
+            if (userFound) {
+                yield (0, email_1.emailValidationAccount)(userFound.hash, userFound.email);
+                return (0, response_1.succesfulResponse)(res, { email });
+            }
+            (0, response_1.unSuccesfulResponse)(res, { error: 'email no found' });
+        }
+        catch (error) {
             (0, response_1.unSuccesfulResponse)(res);
         }
     })

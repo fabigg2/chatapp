@@ -1,8 +1,7 @@
-import { Server, Socket } from "socket.io";
+import { Socket } from "socket.io";
 import { IUser } from "../../domain/interfaces/user.interface";
 import { messageRepository } from "../repositores/message.repositoy";
 import { userRepository } from "../repositores/user.repository";
-import { socketIo } from "../settings/io/io";
 import { verifyToken } from "../utils/token";
 
 export const messageController = async (socket: Socket) => {
@@ -35,15 +34,6 @@ export const messageController = async (socket: Socket) => {
 
         }
     });
-    // socket.on('unsight-message', async(data) => {
-    //     data.state = 2;
-    //     try {
-    //         const res = await messageRepository.edit(data._id, data.state)
-    //         socket.to(`${data.from}`).emit('message-receive', res);
-    //     } catch (error) {
-
-    //     }
-    // });
 
     
     socket.on('find-all-messages', async (data) => {
@@ -57,6 +47,18 @@ export const messageController = async (socket: Socket) => {
 
         }
 
+    });
+
+    socket.on('delete-message', async (data) => {
+        try {
+            const res = await messageRepository.delete(data);
+            if(res){
+                socket.emit('deleted-message', res);
+                socket.to(res.to).emit('deleted-message', res);
+            }
+        } catch (error) {
+            exception(socket, 'internal server error')
+        }
     });
 
     socket.on('disconnect', async () => {
@@ -112,7 +114,6 @@ const leaveSalaPesonal = async (socket: Socket, uid: string) => {
 const usersConneted = async (socket: Socket, use: IUser) => {
     const token = socket.handshake.headers['x-token'] || '';
     const { _id }: any = verifyToken(String(token));
-    // console.log('\n\n\n' + token);
 
     try {
         const users = await userRepository.findMany({ _id: { '$ne': _id } });

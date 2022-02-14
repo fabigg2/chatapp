@@ -8,7 +8,6 @@ export const messageRepository = {
         return await message.save()
     },
     find:async ({from, to}:any) => {
-        console.log(from, to);
         const messages: IMessage[] = await Message.find().and([
             {$or: [{to}, {to:from}]},
             {$or: [{from}, {from:to}]}
@@ -27,6 +26,19 @@ export const messageRepository = {
             {$or:[{state:1}, {state:2}]}
         ]).exec();
         return messages;
+    },
+    delete:async ({id, who}:any) => {
+        const message:IMessage = await Message.findById(id);
+        
+        if(message){
+            if(who[0] && !message.deletedTo.includes(who[0])){
+                message.deletedTo.push(who[0])
+            }
+            if(who[1] && !message.deletedTo.includes(who[1])){
+                message.deletedTo.push(who[1])
+            }
+            return await message.save();
+        }
     }
 
 }

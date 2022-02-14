@@ -6,6 +6,7 @@ import { succesfulResponse, unSuccesfulResponse } from "../utils/response";
 import { genToken } from "../utils/token";
 import { UserDTO } from '../dto/user.dto';
 import { IUser } from "../../domain/interfaces/user.interface";
+import { emailValidationAccount } from "../utils/email";
 
 export const auth = {
     vefifyAccountRegistration: async (req: Request, res: Response) => {
@@ -17,7 +18,7 @@ export const auth = {
 
             userFound.isValidated = true;
             await userFound.save()
-            succesfulResponse(res, userFound);
+            succesfulResponse(res, {user: userFound}, 200, 'Account velidation successful');
 
         } catch (error) {
             unSuccesfulResponse(res);
@@ -111,5 +112,19 @@ export const auth = {
             unSuccesfulResponse(res);
         }
 
+    },
+
+    sendValidationLink:async (req: Request, res: Response) => {
+        const { email } = req.body;
+        try {
+            const userFound = await userRepository.findOneByEmail(email);
+            if(userFound){
+               await emailValidationAccount(userFound.hash, userFound.email);
+               return succesfulResponse(res, {email});
+            }
+            unSuccesfulResponse(res, {error: 'email no found'});
+        } catch (error) {
+            unSuccesfulResponse(res);
+        }
     }
 }

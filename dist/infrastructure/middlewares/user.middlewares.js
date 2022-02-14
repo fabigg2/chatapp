@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isVerified = exports.userExist = exports.userExistByEmail = void 0;
+exports.isVerified = exports.userExist = exports.userExistByEmailForGoogle = exports.userExistByEmail = void 0;
 const user_repository_1 = require("../repositores/user.repository");
 const common_1 = require("../utils/common");
 const response_1 = require("../utils/response");
@@ -30,6 +30,23 @@ const userExistByEmail = (req, res, next) => __awaiter(void 0, void 0, void 0, f
     next();
 });
 exports.userExistByEmail = userExistByEmail;
+const userExistByEmailForGoogle = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { email } = req.body;
+    try {
+        let user = yield user_repository_1.userRepository.findOneByEmail(email);
+        if (user && user._id) {
+            // console.log(user);
+            !user.isGoogle && (0, common_1.errorRes)(req, `${email} already exist`);
+            req.body.currentUser = user;
+        }
+    }
+    catch (error) {
+        console.log(error);
+        (0, response_1.unSuccesfulResponse)(res, { msg: 'error' });
+    }
+    next();
+});
+exports.userExistByEmailForGoogle = userExistByEmailForGoogle;
 const userExist = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { _id } = req.params;
     try {

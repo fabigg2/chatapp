@@ -6,4 +6,5 @@ export interface IMessage extends Document{
     msg: string
     state: number
     date: Date
+    deletedTo: string[]
 }

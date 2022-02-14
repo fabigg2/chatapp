@@ -4,4 +4,5 @@ export class CreateMessageDTO {
     msg !: string
     state !: number
     date !: Date
+    deletedTo !: string[]
 }

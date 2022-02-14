@@ -62,7 +62,7 @@ exports.authRoutes.post('/sign-in', [
  * @openapi
  * /auth/token:
  *   post:
- *     summary: Log in with email and password
+ *     summary: Log in with token
  *     tags:
  *      - auth
  *     parameters:
@@ -156,6 +156,43 @@ exports.authRoutes.post('/google', [
     (0, express_validator_1.check)('xgtoken', 'google token required').notEmpty().isString().isLength({ min: 30 }),
     globals_1.expressValidatorErrors,
     auth_1.auth.googleAuth,
-    user_middlewares_1.userExistByEmail,
+    user_middlewares_1.userExistByEmailForGoogle,
     globals_1.catchErrors
 ], auth_1.auth.saveAndAuth);
+/**
+ * @openapi
+ * /auth/link:
+ *   post:
+ *     summary: Send verification link
+ *     tags:
+ *      - auth
+ *     requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *              schema:
+ *                 type: object
+ *                 properties:
+ *                     email:
+ *                         type: string
+ *     responses:
+ *       200:
+ *         description: .
+ *         content:
+ *          application/json:
+ *            schema:
+ *                 type: object
+ *                 properties:
+ *                     ok:
+ *                         type: boolean
+ *                     msg:
+ *                         type: string
+ *                     data:
+ *                         type: object
+ *       500:
+ *         description: server error
+ */
+exports.authRoutes.post('/link', [
+    (0, express_validator_1.body)('email', 'invalid email').isEmail(),
+    globals_1.expressValidatorErrors
+], auth_1.auth.sendValidationLink);

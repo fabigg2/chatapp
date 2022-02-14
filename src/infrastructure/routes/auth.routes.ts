@@ -3,7 +3,7 @@ import { body, check } from "express-validator";
 import { auth } from "../auth/auth";
 // import { userController } from "../controllers/user.controller";
 import { catchErrors, expressValidatorErrors, verfyUserToken } from "../middlewares/globals";
-import { userExistByEmail } from "../middlewares/user.middlewares";
+import { userExistByEmail, userExistByEmailForGoogle } from "../middlewares/user.middlewares";
 // import { body, check } from "express-validator";
 // import { productController } from "../controllers/product.controller";
 // import { expressValidatorErrors, verfyUserToken } from "../middlewares/globals";
@@ -66,7 +66,7 @@ authRoutes.post('/sign-in',
  * @openapi
  * /auth/token:
  *   post:
- *     summary: Log in with email and password
+ *     summary: Log in with token
  *     tags: 
  *      - auth
  *     parameters:
@@ -91,13 +91,13 @@ authRoutes.post('/sign-in',
  *       500:
  *         description: server error 
  */
- authRoutes.post('/token',
- [
-     check('x-token', 'token required').notEmpty().isString(),
-     expressValidatorErrors,
-     verfyUserToken
- ],
- auth.logInWithToken
+authRoutes.post('/token',
+    [
+        check('x-token', 'token required').notEmpty().isString(),
+        expressValidatorErrors,
+        verfyUserToken
+    ],
+    auth.logInWithToken
 );
 
 /**
@@ -167,11 +167,52 @@ authRoutes.get('/verify/:hash',
  */
 authRoutes.post('/google',
     [
-        check('xgtoken', 'google token required').notEmpty().isString().isLength({min:30}),
+        check('xgtoken', 'google token required').notEmpty().isString().isLength({ min: 30 }),
         expressValidatorErrors,
         auth.googleAuth,
-        userExistByEmail,
+        userExistByEmailForGoogle,
         catchErrors
     ],
     auth.saveAndAuth
+);
+
+/**
+ * @openapi
+ * /auth/link:
+ *   post:
+ *     summary: Send verification link
+ *     tags: 
+ *      - auth
+ *     requestBody: 
+ *        required: true
+ *        content:
+ *          application/json:
+ *              schema:
+ *                 type: object
+ *                 properties:
+ *                     email:
+ *                         type: string
+ *     responses:
+ *       200:
+ *         description: .
+ *         content:
+ *          application/json:
+ *            schema:
+ *                 type: object
+ *                 properties:
+ *                     ok:
+ *                         type: boolean
+ *                     msg:
+ *                         type: string
+ *                     data:
+ *                         type: object              
+ *       500:
+ *         description: server error 
+ */
+authRoutes.post('/link',
+    [
+        body('email', 'invalid email').isEmail(),
+        expressValidatorErrors
+    ],
+    auth.sendValidationLink
 );
