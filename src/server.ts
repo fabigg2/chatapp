@@ -44,13 +44,13 @@ class Server {
         Server.app.use(express.json())
         Server.app.use(cors());
         Server.app.use('/doc', swaggerServe, swaggerSetup);
-        Server.app.use('/', express.static(path.join(__dirname, '../public')));
+        Server.app.get('/', (req: Request, res:Response )=>res.redirect('https://chatapp-fa-v1.herokuapp.com'));
         
     }
 
     private routes() {
         Server.app.use('/api', route);
-        // Server.app.use('**', (req: Request, res:Response )=>res.redirect('/'))
+        Server.app.get('**', (req: Request, res:Response )=>res.json({ok:false, msg:"page no found"}))
         ioConnectionManager(this.socketIo);
     }
 

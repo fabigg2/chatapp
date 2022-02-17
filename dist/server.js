@@ -34,11 +34,11 @@ class Server {
         Server.app.use(express_1.default.json());
         Server.app.use((0, cors_1.default)());
         Server.app.use('/doc', swagger_1.swaggerServe, swagger_1.swaggerSetup);
-        Server.app.use('/', express_1.default.static(path_1.default.join(__dirname, '../public')));
+        Server.app.get('/', (req, res) => res.redirect('https://chatapp-fa-v1.herokuapp.com'));
     }
     routes() {
         Server.app.use('/api', routes_1.default);
-        // Server.app.use('**', (req: Request, res:Response )=>res.redirect('/'))
+        Server.app.get('**', (req, res) => res.json({ ok: false, msg: "page no found" }));
         (0, socket_1.ioConnectionManager)(this.socketIo);
     }
 }
