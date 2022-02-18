@@ -2,7 +2,7 @@ import express, { Application, Request, Response } from 'express';
 import http from 'http';
 
 import cors from 'cors';
-import path from 'path';
+// import path from 'path'
 
 import route from './infrastructure/routes/routes';
 
@@ -15,7 +15,7 @@ import { ioConnectionManager } from './infrastructure/socket';
 
 
 class Server {
-    public static app: Application = express();
+    public app: Application = express();
     public serve: any;
     public socketIo: any;
     private port: String = process.env.PORT || '8080';
@@ -27,7 +27,7 @@ class Server {
      * description: start the server
      */
     public start(port: String = this.port) {
-        this.serve = http.createServer(Server.app);
+        this.serve = http.createServer(this.app);
         this.socketIo = socketIo(this.serve);
         this.serve.listen(this.port, () => {
             console.log('Server on port ' + port)
@@ -40,28 +40,28 @@ class Server {
     }
 
     private middleware() {
-        Server.app.use(express.urlencoded({ extended: false }))
-        Server.app.use(express.json())
-        Server.app.use(cors());
-        Server.app.use('/doc', swaggerServe, swaggerSetup);
-        Server.app.get('/', (req: Request, res:Response )=>res.redirect('https://chatapp-fa-v1.herokuapp.com'));
+        this.app.use(express.urlencoded({ extended: false }))
+        this.app.use(express.json())
+        this.app.use(cors());
+        this.app.use('/doc', swaggerServe, swaggerSetup);
+        this.app.get('/', (req: Request, res:Response )=>res.redirect('https://chatapp-fa-v1.herokuapp.com'));
         
     }
 
     private routes() {
-        Server.app.use('/api', route);
-        Server.app.get('**', (req: Request, res:Response )=>res.json({ok:false, msg:"page no found"}))
+        this.app.use('/api', route);
+        this.app.get('**', (req: Request, res:Response )=>res.json({ok:false, msg:"page no found"}))
         ioConnectionManager(this.socketIo);
     }
 
 }
 
 
-Server.app.use(express.urlencoded({ extended: false }))
-Server.app.use(express.json())
-Server.app.use(cors())
-Server.app.use('/doc', swaggerServe, swaggerSetup);
-Server.app.use('/', express.static(path.join(__dirname, '../public')));
-// Server.app.use('/api', route)
+// this.app.use(express.urlencoded({ extended: false }))
+// this.app.use(express.json())
+// this.app.use(cors())
+// this.app.use('/doc', swaggerServe, swaggerSetup);
+// this.app.use('/', express.static(path.join(__dirname, '../public')));
+// this.app.use('/api', route)
 
 export default Server;

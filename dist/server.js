@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const http_1 = __importDefault(require("http"));
 const cors_1 = __importDefault(require("cors"));
-const path_1 = __importDefault(require("path"));
+// import path from 'path'
 const routes_1 = __importDefault(require("./infrastructure/routes/routes"));
 const DB_1 = __importDefault(require("./infrastructure/settings/db/DB"));
 const swagger_1 = require("./infrastructure/settings/doc/swagger");
@@ -14,13 +14,14 @@ const io_1 = require("./infrastructure/settings/io/io");
 const socket_1 = require("./infrastructure/socket");
 class Server {
     constructor() {
+        this.app = (0, express_1.default)();
         this.port = process.env.PORT || '8080';
     }
     /**
      * description: start the server
      */
     start(port = this.port) {
-        this.serve = http_1.default.createServer(Server.app);
+        this.serve = http_1.default.createServer(this.app);
         this.socketIo = (0, io_1.socketIo)(this.serve);
         this.serve.listen(this.port, () => {
             console.log('Server on port ' + port);
@@ -30,23 +31,22 @@ class Server {
         DB_1.default.connect();
     }
     middleware() {
-        Server.app.use(express_1.default.urlencoded({ extended: false }));
-        Server.app.use(express_1.default.json());
-        Server.app.use((0, cors_1.default)());
-        Server.app.use('/doc', swagger_1.swaggerServe, swagger_1.swaggerSetup);
-        Server.app.get('/', (req, res) => res.redirect('https://chatapp-fa-v1.herokuapp.com'));
+        this.app.use(express_1.default.urlencoded({ extended: false }));
+        this.app.use(express_1.default.json());
+        this.app.use((0, cors_1.default)());
+        this.app.use('/doc', swagger_1.swaggerServe, swagger_1.swaggerSetup);
+        this.app.get('/', (req, res) => res.redirect('https://chatapp-fa-v1.herokuapp.com'));
     }
     routes() {
-        Server.app.use('/api', routes_1.default);
-        Server.app.get('**', (req, res) => res.json({ ok: false, msg: "page no found" }));
+        this.app.use('/api', routes_1.default);
+        this.app.get('**', (req, res) => res.json({ ok: false, msg: "page no found" }));
         (0, socket_1.ioConnectionManager)(this.socketIo);
     }
 }
-Server.app = (0, express_1.default)();
-Server.app.use(express_1.default.urlencoded({ extended: false }));
-Server.app.use(express_1.default.json());
-Server.app.use((0, cors_1.default)());
-Server.app.use('/doc', swagger_1.swaggerServe, swagger_1.swaggerSetup);
-Server.app.use('/', express_1.default.static(path_1.default.join(__dirname, '../public')));
-// Server.app.use('/api', route)
+// this.app.use(express.urlencoded({ extended: false }))
+// this.app.use(express.json())
+// this.app.use(cors())
+// this.app.use('/doc', swaggerServe, swaggerSetup);
+// this.app.use('/', express.static(path.join(__dirname, '../public')));
+// this.app.use('/api', route)
 exports.default = Server;
