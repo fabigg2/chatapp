@@ -17,7 +17,7 @@ import { verifyToken } from "../utils/token";
     const errors = validationResult(req);
     if(errors.isEmpty())
         return next()
-    return unSuccesfulResponse(res, errors);
+    return unSuccesfulResponse(res, errors, 400);
 }
 
 

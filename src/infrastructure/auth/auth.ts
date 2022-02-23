@@ -30,15 +30,17 @@ export const auth = {
         const { email, password } = req.body;
         try {
             const userFound = await userRepository.findOneByEmail(email);
-            if (!userFound)
+            if (!userFound){
+                return unSuccesfulResponse(res, { error: 'user or password incorrect' }, 400)}
+            if (!compoarePassword(password, userFound.password)){
                 return unSuccesfulResponse(res, { error: 'user or password incorrect' }, 400)
-            if (!compoarePassword(password, userFound.password))
-                return unSuccesfulResponse(res, { error: 'user or password incorrect' }, 400)
+            }
             const token = genToken({ _id: userFound._id })
             userFound.password = '';
+            console.log(userFound);
             succesfulResponse(res, { token, user: userFound });
         } catch (error) {
-
+            console.log(genToken);
         }
 
     },

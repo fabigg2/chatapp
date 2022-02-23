@@ -15,9 +15,9 @@ import { ioConnectionManager } from './infrastructure/socket';
 
 
 class Server {
-    public app: Application = express();
-    public serve: any;
-    public socketIo: any;
+    private app: Application = express();
+    private serve: any;
+    private socketIo: any;
     private port: String = process.env.PORT || '8080';
 
     constructor() {
@@ -52,6 +52,15 @@ class Server {
         this.app.use('/api', route);
         this.app.get('**', (req: Request, res:Response )=>res.json({ok:false, msg:"page no found"}))
         ioConnectionManager(this.socketIo);
+    }
+
+    public testSettings(){
+        this.middleware();
+        this.app.use('/api', route);
+    }
+
+    public getApp(){
+        return this.app;
     }
 
 }

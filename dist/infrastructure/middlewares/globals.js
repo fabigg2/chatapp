@@ -15,7 +15,7 @@ const expressValidatorErrors = (req, res, next) => {
     const errors = (0, express_validator_1.validationResult)(req);
     if (errors.isEmpty())
         return next();
-    return (0, response_1.unSuccesfulResponse)(res, errors);
+    return (0, response_1.unSuccesfulResponse)(res, errors, 400);
 };
 exports.expressValidatorErrors = expressValidatorErrors;
 const verfyUserToken = (req, res, next) => {

@@ -1,22 +1,23 @@
 import mongoose from 'mongoose';
-const local = 'mongodb://localhost:27017/test1';
-const connect = () => {
-    mongoose.connect(process.env.DB || local);
+let mongo: mongoose.Mongoose;
+const local = 'mongodb+srv://admin:admin@cluster0.h2efj.mongodb.net/chapapp';
+// const local = 'mongodb://localhost:27017/test1';
+const connect = async () => {
+    try {
+        mongo = await mongoose.connect(process.env.DB || local);        
+        console.log('Connection succesful');
 
-    let { connection: db } = mongoose;
-
-    db.on('error', console.error.bind(console, 'connection error:'))
-    db.once('open', function () {
-        console.log('Conection succesful');
-    })
+    } catch (error) {
+        console.log('Connection filed');
+    }
 
     return mongoose;
 }
 
-const desconnect = ()=>{
-    mongoose.disconnect()
+const desconnect = async() => {
+   if(mongo) return await mongo.disconnect();
 }
 
 
 
-export default {connect, desconnect};
+export default { connect, desconnect };

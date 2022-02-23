@@ -11,7 +11,7 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
  * @returns
  */
 const genToken = (user) => {
-    const secret = process.env.SECRET_WORD_JWT || '';
+    const secret = process.env.SECRET_WORD_JWT || 'fafdlfklakfl';
     return jsonwebtoken_1.default.sign(user, secret, { expiresIn: 60 * 60 });
 };
 exports.genToken = genToken;

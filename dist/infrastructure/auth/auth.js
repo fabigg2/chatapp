@@ -35,15 +35,19 @@ exports.auth = {
         const { email, password } = req.body;
         try {
             const userFound = yield user_repository_1.userRepository.findOneByEmail(email);
-            if (!userFound)
+            if (!userFound) {
                 return (0, response_1.unSuccesfulResponse)(res, { error: 'user or password incorrect' }, 400);
-            if (!(0, encript_password_1.compoarePassword)(password, userFound.password))
+            }
+            if (!(0, encript_password_1.compoarePassword)(password, userFound.password)) {
                 return (0, response_1.unSuccesfulResponse)(res, { error: 'user or password incorrect' }, 400);
+            }
             const token = (0, token_1.genToken)({ _id: userFound._id });
             userFound.password = '';
+            console.log(userFound);
             (0, response_1.succesfulResponse)(res, { token, user: userFound });
         }
         catch (error) {
+            console.log(token_1.genToken);
         }
     }),
     googleAuth: (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {

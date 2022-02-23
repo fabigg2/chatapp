@@ -42,6 +42,13 @@ class Server {
         this.app.get('**', (req, res) => res.json({ ok: false, msg: "page no found" }));
         (0, socket_1.ioConnectionManager)(this.socketIo);
     }
+    testSettings() {
+        this.middleware();
+        this.app.use('/api', routes_1.default);
+    }
+    getApp() {
+        return this.app;
+    }
 }
 // this.app.use(express.urlencoded({ extended: false }))
 // this.app.use(express.json())
