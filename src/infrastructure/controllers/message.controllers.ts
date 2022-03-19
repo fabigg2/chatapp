@@ -24,7 +24,7 @@ export const messageController = async (socket: Socket) => {
         }
     });
 
-    socket.on('message-receive', async(data) => {
+    socket.on('message-receive', async (data) => {
         data.state = 2;
         try {
             const res = await messageRepository.edit(data._id, data.state)
@@ -35,7 +35,7 @@ export const messageController = async (socket: Socket) => {
         }
     });
 
-    
+
     socket.on('find-all-messages', async (data) => {
         try {
             await messageRepository.editMany(data);
@@ -52,13 +52,20 @@ export const messageController = async (socket: Socket) => {
     socket.on('delete-message', async (data) => {
         try {
             const res = await messageRepository.delete(data);
-            if(res){
+            if (res) {
                 socket.emit('deleted-message', res);
                 socket.to(res.to).emit('deleted-message', res);
             }
         } catch (error) {
             exception(socket, 'internal server error')
         }
+    });
+
+    socket.on('writing', async (data) => {
+        socket.to(data.to).emit('wrinting', data);
+    });
+    socket.on('stop-writing', async (data) => {
+        socket.to(data.to).emit('stop-wrinting', data);
     });
 
     socket.on('disconnect', async () => {

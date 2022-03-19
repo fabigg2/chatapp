@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken';
  */
  export const genToken = (user: object) => {
     const secret: string = process.env.SECRET_WORD_JWT || 'fafdlfklakfl';
-    return jwt.sign(user, secret, { expiresIn: 60 * 60 });
+    return jwt.sign(user, secret);
 }
 
 /**

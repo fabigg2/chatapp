@@ -62,6 +62,12 @@ const messageController = (socket) => __awaiter(void 0, void 0, void 0, function
             exception(socket, 'internal server error');
         }
     }));
+    socket.on('writing', (data) => __awaiter(void 0, void 0, void 0, function* () {
+        socket.to(data.to).emit('wrinting', data);
+    }));
+    socket.on('stop-writing', (data) => __awaiter(void 0, void 0, void 0, function* () {
+        socket.to(data.to).emit('stop-wrinting', data);
+    }));
     socket.on('disconnect', () => __awaiter(void 0, void 0, void 0, function* () {
         yield leaveSalaPesonal(socket, user._id);
         usersConneted(socket, user);
