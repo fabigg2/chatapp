@@ -62,10 +62,12 @@ export const messageController = async (socket: Socket) => {
     });
 
     socket.on('writing', async (data) => {
-        socket.to(data.to).emit('wrinting', data);
+         
+        socket.to(data.to).emit('writing', data);
     });
-    socket.on('stop-writing', async (data) => {
-        socket.to(data.to).emit('stop-wrinting', data);
+    socket.on('writing-stop', async (data) => {
+        console.log(data);
+        socket.to(data.to).emit('writing-stop', data);
     });
 
     socket.on('disconnect', async () => {

@@ -63,10 +63,11 @@ const messageController = (socket) => __awaiter(void 0, void 0, void 0, function
         }
     }));
     socket.on('writing', (data) => __awaiter(void 0, void 0, void 0, function* () {
-        socket.to(data.to).emit('wrinting', data);
+        socket.to(data.to).emit('writing', data);
     }));
-    socket.on('stop-writing', (data) => __awaiter(void 0, void 0, void 0, function* () {
-        socket.to(data.to).emit('stop-wrinting', data);
+    socket.on('writing-stop', (data) => __awaiter(void 0, void 0, void 0, function* () {
+        console.log(data);
+        socket.to(data.to).emit('writing-stop', data);
     }));
     socket.on('disconnect', () => __awaiter(void 0, void 0, void 0, function* () {
         yield leaveSalaPesonal(socket, user._id);
