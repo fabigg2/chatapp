@@ -18,7 +18,7 @@ export const auth = {
 
             userFound.isValidated = true;
             await userFound.save()
-            succesfulResponse(res, {user: userFound}, 200, 'Account velidation successful');
+            res.status(200).send('<h3>Your account had been validated</h3>')
 
         } catch (error) {
             unSuccesfulResponse(res);

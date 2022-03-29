@@ -25,7 +25,7 @@ exports.auth = {
                 return (0, response_1.unSuccesfulResponse)(res, { error: 'invalid hash' });
             userFound.isValidated = true;
             yield userFound.save();
-            (0, response_1.succesfulResponse)(res, { user: userFound }, 200, 'Account velidation successful');
+            res.status(200).send('<h3>Your account had been validated</h3>');
         }
         catch (error) {
             (0, response_1.unSuccesfulResponse)(res);
